@@ -22,13 +22,19 @@ router.get('/property', function (req, res, next) {
 });
 
 router.post('/property', upload.single('propertyImage'), function (req, res, next) {
+	let timestamp = new Date();
+	timestamp = timestamp.toLocaleDateString('en-US', {
+		day: 'numeric',
+		month: 'numeric',
+		year: 'numeric',
+	});
 	var newProperty = new Property({
 		location: req.body.location,
 		description: req.body.description,
 		cost_per_month: req.body.cost_per_month,
 		distance: req.body.distance,
-		propertyImage: req.file.path,
-		date: req.body.date,
+		propertyImage: '/uploads/' + req.file.filename,
+		date: timestamp,
 	});
 	newProperty.save(function (err) {
 		res.json({ success: true });
