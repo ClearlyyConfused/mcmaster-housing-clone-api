@@ -31,12 +31,15 @@ router.post('/newProperty', function (req, res, next) {
 
 	uploadImage().then((image) => {
 		var newProperty = new Property({
-			landlord_name: req.body.landlord_name,
+			landlord_email: req.body.landlord_email,
 			location: req.body.location,
 			description: req.body.description,
 			cost_per_month: req.body.cost_per_month,
 			distance: req.body.distance,
 			propertyImage: image.secure_url,
+			rental_term: req.body.rental_term,
+			available_bedrooms: req.body.available_bedrooms,
+			date_available: req.body.date_available,
 			date: timestamp,
 		});
 
