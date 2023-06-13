@@ -1,19 +1,15 @@
+require('dotenv').config();
 var express = require('express');
 var router = express.Router();
 var Property = require('../Models/Property');
-var multer = require('multer');
 var path = require('path');
+var cloudinary = require('cloudinary').v2;
 
-var storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, path.join(__dirname, './uploads'));
-	},
-	filename: function (req, file, cb) {
-		cb(null, file.originalname);
-	},
+cloudinary.config({
+	cloud_name: 'dotw5mwkx',
+	api_key: '834972685861843',
+	api_secret: process.env.CLOUDINARY,
 });
-
-var upload = multer({ storage: storage });
 
 router.get('/property', function (req, res, next) {
 	Property.find().exec(function (err, properties) {
@@ -21,23 +17,30 @@ router.get('/property', function (req, res, next) {
 	});
 });
 
-router.post('/property', upload.single('propertyImage'), function (req, res, next) {
+router.post('/newProperty', function (req, res, next) {
 	let timestamp = new Date();
 	timestamp = timestamp.toLocaleDateString('en-US', {
 		day: 'numeric',
 		month: 'numeric',
 		year: 'numeric',
 	});
-	var newProperty = new Property({
-		location: req.body.location,
-		description: req.body.description,
-		cost_per_month: req.body.cost_per_month,
-		distance: req.body.distance,
-		propertyImage: '/uploads/' + req.file.filename,
-		date: timestamp,
-	});
-	newProperty.save(function (err) {
-		res.json({ success: true });
+
+	async function uploadImage() {
+		return await cloudinary.uploader.upload(req.body.image);
+	}
+
+	uploadImage().then((image) => {
+		var newProperty = new Property({
+			landlord_name: req.body.landlord_name,
+			location: req.body.location,
+			description: req.body.description,
+			cost_per_month: req.body.cost_per_month,
+			distance: req.body.distance,
+			propertyImage: image.secure_url,
+			date: timestamp,
+		});
+
+		newProperty.save().then(res.json({ success: true }));
 	});
 });
 
