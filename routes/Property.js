@@ -25,6 +25,13 @@ router.get('/user-property', function (req, res, next) {
 	});
 });
 
+// delete a property
+router.post('/delete-property', function (req, res, next) {
+	Property.deleteOne({ landlord_email: req.body.email, location: req.body.location }).then(
+		res.json({ success: true })
+	);
+});
+
 // create a new property
 router.post('/newProperty', function (req, res, next) {
 	let timestamp = new Date();
