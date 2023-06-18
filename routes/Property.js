@@ -19,7 +19,7 @@ router.get('/property', function (req, res, next) {
 });
 
 // return all properties with a certain email
-router.get('/user-property', function (req, res, next) {
+router.post('/user-property', function (req, res, next) {
 	Property.find({ landlord_email: req.body.email }).exec(function (err, properties) {
 		res.json(properties);
 	});
