@@ -11,12 +11,21 @@ cloudinary.config({
 	api_secret: process.env.CLOUDINARY,
 });
 
+// return all properties
 router.get('/property', function (req, res, next) {
 	Property.find().exec(function (err, properties) {
 		res.json(properties);
 	});
 });
 
+// return all properties with a certain email
+router.get('/user-property', function (req, res, next) {
+	Property.find({ landlord_email: req.body.email }).exec(function (err, properties) {
+		res.json(properties);
+	});
+});
+
+// create a new property
 router.post('/newProperty', function (req, res, next) {
 	let timestamp = new Date();
 	timestamp = timestamp.toLocaleDateString('en-US', {
