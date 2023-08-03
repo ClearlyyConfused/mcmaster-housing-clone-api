@@ -7,7 +7,7 @@ var PropertySchema = new Schema({
 	description: { type: String, required: true },
 	cost_per_month: { type: Number, required: true },
 	distance: { type: Number, required: true },
-	propertyImage: { type: String, required: true },
+	propertyImage: [{ type: String, required: true }],
 	rental_term: { type: String, required: true },
 	available_bedrooms: { type: Number, required: true },
 	date_available: { type: Date, required: true },

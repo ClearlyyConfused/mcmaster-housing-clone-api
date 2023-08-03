@@ -41,18 +41,27 @@ router.post('/newProperty', function (req, res, next) {
 		year: 'numeric',
 	});
 
-	async function uploadImage() {
-		return await cloudinary.uploader.upload(req.body.image);
+	async function uploadImage(image) {
+		return await cloudinary.uploader.upload(image);
 	}
 
-	uploadImage().then((image) => {
+	async function uploadAllImages() {
+		let images = [];
+		for (const image of req.body.image) {
+			const uploadedImage = await uploadImage(image);
+			images.push(uploadedImage.secure_url);
+		}
+		return images;
+	}
+
+	uploadAllImages().then((images) => {
 		var newProperty = new Property({
 			landlord_email: req.body.landlord_email,
 			location: req.body.location,
 			description: req.body.description,
 			cost_per_month: req.body.cost_per_month,
 			distance: req.body.distance,
-			propertyImage: image.secure_url,
+			propertyImage: images,
 			rental_term: req.body.rental_term,
 			available_bedrooms: req.body.available_bedrooms,
 			date_available: req.body.date_available,
